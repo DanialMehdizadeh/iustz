@@ -12,140 +12,133 @@ void Story(string name) {
     << "They learn to survive in unknown places and find peace in memories and friendships.\n"
     << "Despite the dangers, " << name << " perseveres. They're determined to find redemption in a world where survival is crucial.";
 //zombies
-#include <iostream>
-#include <string>
-#include <cstdlib> 
-using namespace std;
 class Zombie {
-  private:
-    //level of the zombie
-    int level;
-    //name of the zombie
+protected:
     string name;
-    //information of the zombie
-   string description;
-    //health of the zombie
-    int health;
-    //damage of the zombie
+    string description;
+    string ability = "None";
+    int level = 1;
+    int health = 50;
+    int stamina = 20;
     int damage;
-    //defense of the zombie
-    int defense;
-    // speed of the zombie
-    int speed;
-    //infection chance of the zombie
     int infection;
-  public:
-    //constructor for the normall zombie class
-    Zombie(int level, string name, string description, int health, int damage, int defense, int speed, int infection) {
-      this->level = level;
-      this->name = name;
-      this->description = description;
-      this->health = health;
-      this->damage = damage;
-      this->defense = defense;
-      this->speed = speed;
-      this->infection = infection;
+
+public:
+    // Constructor
+    Zombie(string _name) {
+        name = _name;
     }
-    //getters for the attributes of the zombie
-    int getLevel() {
-      return this->level;
-    }
-    
-    string getName() {
-      return this->name;
-    }
-    
-    string getDescription() {
-      return this->description;
+
+    // Getters for zombie attributes
+    string getName() const { return name; }
+    string getDescription() const { return description; }
+    string getAbility() const { return ability; }
+    int getLevel() const { return level; }
+    int getHealth() const { return health; }
+    int getStamina() const { return stamina; }
+    int getDamage() const { return damage; }
+    int getInfection() const { return infection; }
+
+    void setHealth(int newHealth) {
+        health = newHealth;
     }
     
-    int getHealth() {
-      return this->health;
+    void setStamina(int newStamina) {
+        stamina = newStamina;
     }
-    
-    int getDamage() {
-      return this->damage;
+
+    // Method for the zombie to attack the player
+    virtual void attack(Player player) {
+        // Calculate actual damage
+        int actualDamage = damage - player.getDefense();
+        // Apply damage to the player
+        if (actualDamage > 0) {
+            player.setHealth(player.getHealth() - actualDamage);
+        }
+        // Check for infection
+        int random = rand() % 100 + 1; // Generate random number between 1 and 100
+        if (random <= infection) {
+            player.setInfected(true);
+        }
     }
-    
-    int getDefense() {
-      return this->defense;
-    }
-    
-    int getSpeed() {
-      return this->speed;
-    }
-    
-    int getInfection() {
-      return this->infection;
-    }
-    // A method for the zombie to attack the player
-    void attack(Player* player) {
-      // zombie damage is the damage of zombie mines player defence
-      int actualDamage = this->damage - player->getDefense();
-      // if the actual damage is positive, reduce the player's health by that amount
-      if (actualDamage > 0) {
-        player->setHealth(player->getHealth() - actualDamage);
-      }
-      // a random number between 0 and 100
-      int random = rand() % 100 + 1;
-      // if the random number is less or equal the infection chance of the zombie, infect the player
-      if (random <= this->infection) {
-        player->setInfected(true);
-      }
+
+    void printZombieInfo() {
+        cout << "Zombie's Information:" << endl << " -Name: " << name << endl
+        << " -Ability: " << ability << endl
+        << " -Level: " << level << endl;
+
     }
 };
 
-// class of strong zombies
 class StrongZombie : public Zombie {
-  private:
-    // The special ability of the strong zombie
-    string ability;
-  public:
-    // constructor for the strong zombie class
-    StrongZombie(int level, string name, string description, int health, int damage, int defense, int speed, int infection, string ability) : Zombie(level, name, description, health, damage, defense, speed, infection) {
-      this->ability = ability;
+public:
+    StrongZombie(string _name, int _level) 
+     : Zombie(_name)
+    {
+        level = _level;
     }
-    //getter for the special ability of the strong zombie
-    string getAbility() {
-      return this->ability;
+
+    void setAbility(int level) {
+        if (level == 1) {
+            ability = "None";
+        }
+        else if (level == 2) {
+            ability = "Exploder";
+        }
+        else if(level == 3) {
+           ability = "Hunter";
+        }
+        else if(level == 4) {
+           ability = "Spitter";
+        }
+        else if(level == 5) {
+           ability = "Brute";
+        }
     }
-    // A method for the strong zombie to use its special ability on the player
-    void useAbility(//about player) {
-      // if the zombie is Brute,deal double damage to the player
-      if (this->ability == "Brute") {
-        int actualDamage = this->damage * 2 - player->getDefense();
-        if (actualDamage > 0) {
-          player->setHealth(player->getHealth() - actualDamage);
+
+    void attack(Player player) override {
+        int actualDamage = 0;
+
+        if (ability == "None") {
+            actualDamage = damage - player.getDefense();
         }
-      }
-      // if the zombie is "Spitter", deal damage to the player and reduce their defense by half
-      else if (this->ability == "Spitter") {
-        int actualDamage = this->damage - player->getDefense();
-        if (actualDamage > 0) {
-          player->setHealth(player->getHealth() - actualDamage);
+        // If the zombie is an "Exploder", deal damage to the player and itself, and die
+        else if (ability == "Exploder") {
+            actualDamage = damage - player.getDefense();
+            setHealth(0);
         }
-        player->setDefense(player->getDefense() / 2);
-      }
-      // If the zombie is "Exploder", deal damage to the player and itself, and die
-      else if (this->ability == "Exploder") {
-        int actualDamage = this->damage - player->getDefense();
-        if (actualDamage > 0) {
-          player->setHealth(player->getHealth() - actualDamage);
+        // If the zombie is a "Hunter", deal damage to the player and Increase stamina by half
+        else if (ability == "Hunter") {
+            actualDamage = damage - player.getDefense();
+            player.setStamina(player.getStamina()/2);
         }
-        this->setHealth(0);
-      }
-      // If the ability is "Hunter", deal damage to the player and increase its speed by half
-      else if (this->ability == "Hunter") {
-        int actualDamage = this->damage - player->getDefense();
-        if (actualDamage > 0) {
-          player->setHealth(player->getHealth() - actualDamage);
+        // If the zombie is a "Spitter", deal damage to the player and reduce their defense by half
+        else if (ability == "Spitter") {
+            actualDamage = damage - player.getDefense();
+            player.setDefense(player.getDefense() / 2);
         }
-        this->setSpeed(this->getSpeed() * 1.5);
-      }
+        // If the zombie is a "Brute", deal double damage to the player
+        else if (ability == "Brute") {
+            actualDamage = damage * 2 - player.getDefense();
+        }
+
+        // Apply damage to the player if it's positive
+        if (actualDamage > 0) {
+            player.setHealth(player.getHealth() - actualDamage);
+        }
+
+        // Check for infection
+        int random = rand() % 100 + 1; // Generate random number between 1 and 100
+        if (random <= infection) {
+            player.setInfected(true);
+        }
     }
 };
+int chooseZombieLevel(Player player) {
+    int n = player.getLevel();
+    int randomNumber = rand() % n + 1;
+    return randomNumber;
 }
-
 int main() {
     cout << "In this world torn apart by the Cordyceps fungus outbreak,\n"
     << "once-thriving cities now lay in ruins, overgrown with nature's relentless reclaiming.\n"
