@@ -1,314 +1,141 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <cstdlib> 
 #include <vector>
 #include <limits>
-#include <windows.h>
 #include <ctime>
-
-using namespace std;
-
-void gotoxy(int x, int y)
-//function to go to the first place 
-{
-    COORD coord;
-    coord.X = x;
-    coord.Y = y;
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-}
-// Function to read names from the file into a vector
-vector<string> readNamesFromFile(const string& filename) {
-    vector<string> names;
-    ifstream file(filename);
-    if (file.is_open()) {
-        string name;
-        while (getline(file, name)) {
-            names.push_back(name);
-        }
-        file.close();
-    } else {
-        cerr << "Error: Unable to open file: " << filename << endl;
-    }
-    return names;
-}
-// Function to choose a random name from the vector
-string chooseRandomName(const vector<string>& names) {
-    int randomIndex = rand() % names.size();
-    return names[randomIndex];
-}
-
-struct Stats {
-    int levelNumber;
-    int strength;              
-    int intelligence;
-    int agility;
-    int firearmSkill;
-    int coldWeaponSkill;
-};
-
-class Player {
-protected: 
-    string name;
-    string gender; 
-    int age;
-    int health = 100; 
-    int stamina = 50;
-    int attackDamage;
-    int defense = 0;
-    int money = 100;
-    int skillPoints = 0;
-    bool infected = false;
-    Stats playerStats;
-public :
-
-    Player(string newName, string newGender, int newAge) {
-        age = newAge;
-        gender = newGender;
-        name = newName;
-        playerStats.levelNumber = 1;
-        playerStats.strength = 0;
-        playerStats.intelligence = 0;
-        playerStats.agility = 0;
-        playerStats.firearmSkill = 0;
-        playerStats.coldWeaponSkill = 0;
-    }
-
-    void setHealth(int newHealth) {
-        health = newHealth; 
-    }
-    void setStamina(int newStamina) {
-        stamina = newStamina; 
-    }
-    void setAttack (int newAttackDamage) {
-        attackDamage = newAttackDamage;
-    }
-    void setDefense (int newDefense) {
-        defense = newDefense;
-    }
-    void setMoney (int newMoney) {
-        money = newMoney;
-    }
-    string getName() {return name;}
-
-    string getGender() {return gender;}
-
-    int getAge() {return age;}
-    
-    int getHealth() {return health;}
-
-    int getStamina() {return stamina;}
-
-    int getAttackDamage() {return attackDamage;}
-
-    int getDefense() {return defense;}
-
-    int getMoney() {return money;}
-
-    int getSkillPoints() {return skillPoints;}
-
-    int getLevel() {return playerStats.levelNumber;}
-
-    void setInfected(bool infectionStatus) {
-        infected = infectionStatus;
-    }
-
-    void printPlayeInfo() {
-        cout << "Your character:" << endl << " -Name: " << name << endl
-        << " -Gender: " << gender << endl
-        << " -Age: " << age << endl << endl
-        << " -Level: " << playerStats.levelNumber << endl
-        << " -Strength: " << playerStats.strength << endl
-        << " -Intelligence: " << playerStats.intelligence <<endl
-        << " -Agility: " << playerStats.agility << endl
-        << " -Firearm Skill: " << playerStats.firearmSkill << endl
-        << " -Cold Weapon Skill: " << playerStats.coldWeaponSkill << endl;
-    }
-
-    void addLevel() {
-        playerStats.levelNumber += 1;
-    }
-    void addStats(int number) {
-        if (number == 1) {
-            playerStats.strength += 1;
-        }
-        else if (number == 2) {
-            playerStats.intelligence += 1;
-        }
-        else if (number == 3) {
-            playerStats.agility += 1;
-        }
-        else if (number == 4) {
-            playerStats.firearmSkill += 1;
-        }
-        else if (number == 5) {
-            playerStats.coldWeaponSkill += 1;
-        }
-    }   
-};
+#include <conio.h>
+#include "Utilities.h"
+#include "Bar.h"
+#include "Player.h"
+#include "Zombie.h"
+#include "Item.h"
+#include "consumableItem.h"
+#include "permanentItem.h"
+#include "throwableItem.h"
+#include "BackPack.h"
+#include "Shop.h"
+#include <windows.h>
 
 
 
-class Zombie {
-protected:
-    string name;
-    string description;
-    string ability = "None";
-    int level = 1;
-    int health = 50;
-    int stamina = 20;
-    int damage;
-    int infection;
-
-public:
-    // Constructor
-    Zombie(string _name) {
-        name = _name;
-    }
-
-    // Getters for zombie attributes
-    string getName() const { return name; }
-    string getDescription() const { return description; }
-    string getAbility() const { return ability; }
-    int getLevel() const { return level; }
-    int getHealth() const { return health; }
-    int getStamina() const { return stamina; }
-    int getDamage() const { return damage; }
-    int getInfection() const { return infection; }
-
-    void setHealth(int newHealth) {
-        health = newHealth;
-    }
-    
-    void setStamina(int newStamina) {
-        stamina = newStamina;
-    }
-
-    // Method for the zombie to attack the player
-    virtual void attack(Player player) {
-        // Calculate actual damage
-        int actualDamage = damage - player.getDefense();
-        // Apply damage to the player
-        if (actualDamage > 0) {
-            player.setHealth(player.getHealth() - actualDamage);
-        }
-        // Check for infection
-        int random = rand() % 100 + 1; // Generate random number between 1 and 100
-        if (random <= infection) {
-            player.setInfected(true);
-        }
-    }
-
-    void printZombieInfo() {
-        cout << "Zombie's Information:" << endl << " -Name: " << name << endl
-        << " -Ability: " << ability << endl
-        << " -Level: " << level << endl;
-
-    }
-};
-
-class StrongZombie : public Zombie {
-public:
-    StrongZombie(string _name, int _level) 
-     : Zombie(_name)
-    {
-        level = _level;
-    }
-
-    void setAbility(int level) {
-        if (level == 1) {
-            ability = "None";
-        }
-        else if (level == 2) {
-            ability = "Exploder";
-        }
-        else if(level == 3) {
-           ability = "Hunter";
-        }
-        else if(level == 4) {
-           ability = "Spitter";
-        }
-        else if(level == 5) {
-           ability = "Brute";
-        }
-    }
-
-    void attack(Player player) override {
-        int actualDamage = 0;
-
-        if (ability == "None") {
-            actualDamage = damage - player.getDefense();
-        }
-        // If the zombie is an "Exploder", deal damage to the player and itself, and die
-        else if (ability == "Exploder") {
-            actualDamage = damage - player.getDefense();
-            setHealth(0);
-        }
-        // If the zombie is a "Hunter", deal damage to the player and Increase stamina by half
-        else if (ability == "Hunter") {
-            actualDamage = damage - player.getDefense();
-            player.setStamina(player.getStamina()/2);
-        }
-        // If the zombie is a "Spitter", deal damage to the player and reduce their defense by half
-        else if (ability == "Spitter") {
-            actualDamage = damage - player.getDefense();
-            player.setDefense(player.getDefense() / 2);
-        }
-        // If the zombie is a "Brute", deal double damage to the player
-        else if (ability == "Brute") {
-            actualDamage = damage * 2 - player.getDefense();
-        }
-
-        // Apply damage to the player if it's positive
-        if (actualDamage > 0) {
-            player.setHealth(player.getHealth() - actualDamage);
-        }
-
-        // Check for infection
-        int random = rand() % 100 + 1; // Generate random number between 1 and 100
-        if (random <= infection) {
-            player.setInfected(true);
-        }
-    }
-};
-int chooseZombieLevel(Player player) {
-    int n = player.getLevel();
-    int randomNumber = rand() % n + 1;
-    return randomNumber;
-}
-
-void Story(string name) {
-    cout << "there's a survivor named " << name <<".\n"
+void Story(std::string name) {
+    std::cout << std::endl << "there's a survivor named " << name <<".\n"
     << "They're thrown into a chaotic world, where they fight to hold onto their humanity.\n"
     << "In this harsh reality, " << name << " encounters both kind and cruel individuals.\n"
     << "They learn to survive in unknown places and find peace in memories and friendships.\n"
     << "Despite the dangers, " << name << " perseveres. They're determined to find redemption in a world where survival is crucial.";
 }
 
+void Battle(Player &player, StrongZombie zombie) {
+    while(true) {
+        bool isZombiesTurn = true;
+        player.printPlayerStatus();
+        zombie.printZombieStatus();
+        std::cout << std::endl << "What do you want to do? (Attacks or Throwables will end your turn.)" << std::endl
+        << "[1]. Attack |" << " [2]. Inventory |" << " [3]. Skill Tree |" << " [4]. End Turn" << std::endl ;
+        int choice;
+        std::cin >> choice;
+        while (std::cin.fail() || choice > 4 || choice < 1)
+        {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Sorry, choose between 1 and 4: ";
+            std::cin >> choice;
+        }
+        switch (choice) {
+            case 1: {
+                zombie.takeDamage(player);
+                Sleep(1000);
+                break;
+            }
+            case 2: {
+                player.visitBackpackInventory(zombie);
+                break;
+            }
+            case 3: {
+                player.printPlayerInfo();
+                std::cout << std::endl << "You have " << player.getSkillPoints() << " skill points " << "Which stat do you want to upgrade? (each upgrade costs 5 skill points)\n";
+                std::cout << "[1]. Strength |" << " [2]. Intelligence |" << " [3]. Agility |" << " [4]. Firearm Skill |" << " [5]. Melee Skill |" << " [6]. Back" << std::endl;
+                int statChoice;
+                std::cin >> statChoice;
+                while (std::cin.fail() || statChoice > 6 || statChoice < 1)
+                {
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    std::cout << "Sorry, choose between 1 and 6: ";
+                    std::cin >> statChoice;
+                }
+                isZombiesTurn = player.addStats(statChoice);
+                break;
+            }
+            case 4: {
+                break;
+            }
+            defualt : {
+                break;
+            }
+        }
+        if (zombie.getHealth() == 0) {
+            std::cout << std::endl << "You killed " << zombie.getName() << "." << std::endl;
+            player.addKill();
+            player.addSkillPointsRandom();
+            player.addRandomMoney();
+            player.setHealth(player.getMaxHealth());
+            player.setStamina(player.getMaxStamina());
+            if ((player.getKillCount() != 0) && (player.getKillCount() % 10 == 0)){
+                player.addLevel();
+            }
+            return;
+        }
+        else if(isZombiesTurn) {
+            zombie.setStamina(zombie.getStamina() + 1);
+            std::cout << std::endl << zombie.getName() << " gained 1 stamina." << std::endl;
+            zombie.attack(player);
+            if (player.getHealth() == 0)
+            {
+                std::cout << std::endl << "You got killed by " << zombie.getName() << "." << std::endl;
+                return;
+            }
+            player.setStamina(player.getStamina()+2);
+            std::cout << std::endl << "You gained 2 stamina." << std::endl;
+        }
+
+    }
+}
+
 int main() {
-    system("cls");
-    gotoxy(0, 0);
+    
+    SetConsoleOutputCP(CP_UTF8);
+    
     srand(static_cast<unsigned int>(time(nullptr))); // Seed for random number generation
-    cout << "- Day 0: Introduction\n" 
+    std::cout << "\n\t\t\t\t";
+    std::cout << "\n\n\t\t\t\t" << "███████╗██╗  ██╗███████╗    ██╗      █████╗ ███████╗████████╗     ██████╗ ███╗   ██╗███████╗███████╗";
+    std::cout << "\n\t\t\t\t" << "╚══██╔══╝██║  ██║██╔════╝    ██║     ██╔══██╗██╔════╝╚══██╔══╝    ██╔═══██╗████╗  ██║██╔════╝██╔════╝";
+    std::cout << "\n\t\t\t\t" << "   ██║   ███████║█████╗      ██║     ███████║███████╗   ██║       ██║   ██║██╔██╗ ██║█████╗  ███████╗";
+    std::cout << "\n\t\t\t\t" << "   ██║   ██╔══██║██╔══╝      ██║     ██╔══██║╚════██║   ██║       ██║   ██║██║╚██╗██║██╔══╝  ╚════██║";
+    std::cout << "\n\t\t\t\t" << "   ██║   ██║  ██║███████╗    ███████╗██║  ██║███████║   ██║       ╚██████╔╝██║ ╚████║███████╗███████║";
+    std::cout << "\n\t\t\t\t" << "   ╚═╝   ╚═╝  ╚═╝╚══════╝    ╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝        ╚═════╝ ╚═╝  ╚═══╝╚══════╝╚══════╝\n";
+    std::cout << "- Day 0: Introduction\n" 
     << "In this world torn apart by the Cordyceps fungus outbreak,\n"
     << "once-thriving cities now lay in ruins, overgrown with nature's relentless reclaiming.\n"
     << "Buildings stand as hollow shells, haunted by the echoes of lost lives and abandoned dreams.\n"
     << "The streets, once crowded with activity, now echo with the eerie silence of decay.\n"
     << "What's your name survivor?\n";
-    string name;
-    string gender;
+    std::string name;
+    std::string gender;
     int age;
-    getline(cin, name);
+    std::getline(std::cin, name);
     Story(name);
     int choice;
-    cout << "What is your gender?\n" << "[1] Male\n" << "[2] Female\n";
-    cin >> choice;
-    while (cin.fail() || choice < 1 || choice > 2)
+    std::cout << std::endl << "What is your gender?\n" << "[1] Male\n" << "[2] Female\n";
+    std::cin >> choice;
+    while (std::cin.fail() || choice < 1 || choice > 2)
     {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Invalid choice. Please enter a valid option (1-2): ";
-        cin >> choice;
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Invalid choice. Please enter a valid option (1-2): ";
+        std::cin >> choice;
     }
     if (choice == 1) {
         gender = "Male";
@@ -316,41 +143,45 @@ int main() {
     else {
         gender = "Female";
     }
-    cout << "How old are you " << name << "?" << endl;
-    cin >> age;
-    while (cin.fail() || age < 11)
+    std::cout << std::endl << "How old are you " << name << "?" << std::endl;
+    std::cin >> age;
+    while (std::cin.fail() || age < 11 || age > 90)
     {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Sorry, your character needs to be older than 10. enter a new age: ";
-        cin >> age;
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Sorry, your character needs to be older than 10 and younger than 90. enter a new age: ";
+        std::cin >> age;
     }
     Player player1{name, gender, age};
-    player1.printPlayeInfo();
+    player1.printPlayerInfo();
     int currentDay = 1;
-    vector<string> zombieNames = readNamesFromFile("lists/zombie_names.txt");
+    std::vector<std::string> zombieNames = readFromFile("lists/zombie_names.txt");
+    std::vector<std::string> dialogues = readFromFile("lists/dialogues.txt");
     do {
         // Generate a random number between 1 and 2
         int randomNumber = rand() % 2 + 1;
         switch(randomNumber) {
             case 1:
             {
-                string zombieName = chooseRandomName(zombieNames);
+                std::string dialogue = chooseRandomLine(dialogues);
+                std::cout << std::endl << "- Day " << currentDay << ": Fight" << std::endl << player1.getName() << ": " << dialogue << std::endl << std::endl;
+                std::string zombieName = chooseRandomLine(zombieNames);
                 int zombieLevel = chooseZombieLevel(player1);
                 StrongZombie zombie{zombieName,zombieLevel};
                 zombie.printZombieInfo();
-                int n;
-                cin >> n;
+                Battle(player1, zombie);
                 break;
             }
             case 2:
             {
-                cout << "Welcome to shop" << endl;
+                std::cout << std::endl << "- Day " << currentDay << ": Shop" << std::endl << "You enter the shop." << std::endl;
                 //shop
-                int n;
-                cin >> n;
+                Shop shop;
+                player1.visitStore(shop);
+                break;
             }
         }
+        currentDay++;
     } while (1);
 
     return 0;
