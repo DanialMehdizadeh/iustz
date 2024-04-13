@@ -7,6 +7,7 @@
 #include "consumableItem.h"
 #include "throwableItem.h"
 #include <vector>
+#include <sstream>
 #include <map>
 #include <algorithm>
 
@@ -18,7 +19,7 @@ private:
     std::vector<Item*> permanentItems;
     std::vector<Item*> consumableItems;
     std::vector<Item*> throwableItems;
-    std::vector<Item*> attackinventory;
+    std::string equipedWeapon = "Hands";
 
     std::map<std::string, int> itemStock; // Map to keep track of item stock
 
@@ -30,10 +31,12 @@ public:
 
     std::map<std::string, int> getItemStock() const;
 
-    void showInventoryMenu(Player& player, StrongZombie& zombie);
-    void showPermanentItems(Player& player, StrongZombie& zombie);
-    void showConsumableItems(Player& player, StrongZombie& zombie);
-    void showThrowableItems(Player& player, StrongZombie& zombie);
+    void showInventoryMenu(Player& player, Enemy* enemy,bool &isEnemysTurn);
+    void showPermanentItems(Player& player, Enemy* enemy,bool &isEnemysTurn);
+    void showConsumableItems(Player& player, Enemy* enemy,bool &isEnemysTurn);
+    void showThrowableItems(Player& player, Enemy* enemy,bool &isEnemysTurn, bool &isUsed);
+    void saveBackPack(std::ofstream &file);
+    void loadBackPack(const std::string& filename);
 
 private:
     Item* findItem(const std::string& itemName, const std::vector<Item*>& items);

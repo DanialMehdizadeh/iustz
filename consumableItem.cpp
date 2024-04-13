@@ -4,7 +4,7 @@
 // Implementation of Consumable class
 Consumable::Consumable(std::string _name, int _price) : Item(_name, _price) {}
 
-void Consumable::use(Player& player,StrongZombie& zombie)
+void Consumable::use(Player& player,Enemy* enemy)
 {
     // Placeholder for future use
 }
@@ -12,18 +12,18 @@ void Consumable::use(Player& player,StrongZombie& zombie)
 // Implementation of HealthBooster class
 HealthBooster::HealthBooster(std::string _name, int _price, int _effectValue) : Consumable(_name, _price), effectValue(_effectValue) {}
 
-void HealthBooster::use(Player& player,StrongZombie& zombie)
+void HealthBooster::use(Player& player,Enemy* enemy)
 {
-    std::cout << "Consumed " << getName() << " and gained " << effectValue << " health." << std::endl;
+    std::cout << "\t\t\t\t"  << "Consumed " << getName() << " and gained " << effectValue << " health." << std::endl;
     player.setHealth(player.getHealth() + effectValue);
 }
 
 // Implementation of StaminaBooster class
 StaminaBooster::StaminaBooster(std::string _name, int _price, int _effectValue) : Consumable(_name, _price), effectValue(_effectValue) {}
 
-void StaminaBooster::use(Player& player,StrongZombie& zombie)
+void StaminaBooster::use(Player& player,Enemy* enemy)
 {
-    std::cout << "Consumed " << getName() << " and gained " << effectValue << " stamina." << std::endl;
+    std::cout << "\t\t\t\t"  << "Consumed " << getName() << " and gained " << effectValue << " stamina." << std::endl;
     player.setStamina(player.getStamina() + effectValue);
 }
 

@@ -8,5 +8,7 @@
 void zombieHealthBar(int current, int max, int increment);
 void playerHealthBar(int current, int max, int increment);
 void staminaBar(int current, int max, int increment);
+void defenseBar(int current, int max, int increment);
+
 
 #endif // BAR_H

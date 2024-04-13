@@ -1,5 +1,6 @@
 #include "Utilities.h"
-
+#include <chrono>
+#include <thread>
 
 void TypeSlow (std::string print, int i)
 {
@@ -50,7 +51,7 @@ std::vector<std::string> readFromFile(const std::string& filename) {
         }
         file.close();
     } else {
-        std::cerr << "Error: Unable to open file: " << filename << std::endl;
+        std::cerr << "\t\t\t\t"  << "Error: Unable to open file: " << filename << std::endl;
     }
     return lines;
 }
@@ -58,4 +59,30 @@ std::vector<std::string> readFromFile(const std::string& filename) {
 std::string chooseRandomLine(const std::vector<std::string>& lines) {
     int randomIndex = rand() % lines.size();
     return lines[randomIndex];
+}
+
+void printAscii(){
+    std::vector<std::string> ascii = readFromFile("ASCII-Designer.txt");
+    for (int i = 0; i <= ascii.size(); i++)
+    {
+        TypeFast(ascii[i], 0);
+        if (i != ascii.size() -1) {
+            std::cout<<std::endl;
+        }
+    }
+}
+
+void ScreenShake(int intensity, int duration) {
+    auto start = std::chrono::steady_clock::now();
+    auto end = start + std::chrono::milliseconds(duration);
+
+    while (std::chrono::steady_clock::now() < end) {
+        int dx = rand() % (2 * intensity) - intensity;
+        int dy = rand() % (2 * intensity) - intensity;
+        HWND hwnd = GetConsoleWindow();
+        RECT rect;
+        GetWindowRect(hwnd, &rect);
+        MoveWindow(hwnd, rect.left + dx, rect.top + dy, rect.right - rect.left, rect.bottom - rect.top, TRUE);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Adjust the delay for shake intensity
+    }
 }

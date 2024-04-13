@@ -3,13 +3,13 @@
 
 #include "Item.h"
 
-class StrongZombie;
+class Enemy;
 
 class Throwable : public Item {
 public:
     Throwable(std::string _name, int _price);
 
-    void use(Player& player,StrongZombie& zombie) override;
+    void use(Player& player,Enemy* enemy) override;
 };
 
 class Molotov : public Throwable {

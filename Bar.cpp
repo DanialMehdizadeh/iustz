@@ -52,3 +52,22 @@ void staminaBar (int current, int max, int increment) {
     SetConsoleColor(7);
     std::cout << "] " << current + max << "/" << max;
 }
+
+void defenseBarBar (int current, int max, int increment) {
+    std::string bar = "";
+    for (int i = 0; i < (max / increment); i++) {
+        if (current > 0) {
+            bar += "\U0001F6E1"; //  Shield: 🛡️ (U+1F6E1)
+
+        } else {
+            bar += ".";
+        }
+        current -= increment;
+    }
+    // Print the colored bar and numbers
+    std::cout << "[";
+    SetConsoleColor(1);
+    std::cout << bar;
+    SetConsoleColor(7);
+    std::cout << "] " << current + max << "/" << max;
+}

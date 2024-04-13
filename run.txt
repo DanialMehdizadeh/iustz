@@ -1,0 +1,1 @@
+g++ main.cpp Item.cpp BackPack.cpp Player.cpp Zombie.cpp consumableItem.cpp throwableItem.cpp permanentItem.cpp Utilities.cpp Bar.cpp Shop.cpp Enemy.cpp HumanEnemy.cpp resource.res -o test.exe -lwinmm

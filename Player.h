@@ -5,10 +5,12 @@
 #include <iostream>
 #include <string>
 #include "Item.h"
+#include <fstream>
 #include "Shop.h"
 #include "BackPack.h"
+#include "Enemy.h"
 #include "Bar.h"
-class StrongZombie;
+
 struct Stats {
     int levelNumber;
     int strength;
@@ -35,13 +37,17 @@ protected:
     int killCount;
     bool infected;
     Stats playerStats;
+    int dayCount;
+    enum playertype {jobless,warrior,knight,athletic,farmer} ;
+    playertype class1;
     
-
 public:
     Backpack backpack;
     Player(std::string newName, std::string newGender, int newAge);
     // Declare member functions here
     // Getters and setters
+    void setplayerclass(playertype _class);
+    playertype getplayerclass();
     void setMaxHealth(int newMaxHealth);
     void setMaxStamina(int newMaxStamina);
     void setHealth(int newHealth);
@@ -64,6 +70,7 @@ public:
     int getSkillPoints();
     int getKillCount();
     int getLevel();
+    int getDay();
     int getRandomAttackDamage();
     int getRandomStaminaCost();
     void setInfected(bool infectionStatus);
@@ -74,10 +81,13 @@ public:
     void addSkillPointsRandom();
     void addRandomMoney();
     bool addStats(int number);
-
-
+    void nextDay();
+    
+    void savePlayer(const std::string& filename);
+    void loadPlayer(const std::string& filename);
+    
     void visitStore(Shop& shop);
-    void visitBackpackInventory(StrongZombie& zombie);
+    void visitBackpackInventory(Enemy* enemy, bool &isEnemysTurn);
     void addPermanentItemToBackpack(Item* item);
     void addConsumableItemToBackpack(Item* item);
     void addThrowableItemToBackpack(Item* item);

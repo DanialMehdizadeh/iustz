@@ -8,7 +8,7 @@ class Consumable : public Item {
 public:
     Consumable(std::string _name, int _price);
 
-    void use(Player& player,StrongZombie& zombie) override;
+    void use(Player& player,Enemy* enemy) override;
 };
 
 class HealthBooster : public Consumable {
@@ -17,7 +17,7 @@ class HealthBooster : public Consumable {
 public:
     HealthBooster(std::string _name, int _price, int _effectValue);
 
-    void use(Player& player,StrongZombie& zombie) override;
+    void use(Player& player,Enemy* enemy) override;
 };
 
 class StaminaBooster : public Consumable {
@@ -26,7 +26,7 @@ class StaminaBooster : public Consumable {
 public:
     StaminaBooster(std::string _name, int _price, int _effectValue);
 
-    void use(Player& player,StrongZombie& zombie) override;
+    void use(Player& player,Enemy* enemy) override;
 };
 
 class HealthPotion : public HealthBooster {

@@ -1,71 +1,81 @@
 #include "permanentItem.h"
+#include "Player.h"
 
 PermanentItem::PermanentItem(std::string _name, int _price) : Item(_name, _price) {}
 
-void PermanentItem::use(Player& player, StrongZombie& zombie)
+void PermanentItem::use(Player& player, Enemy* enemy)
 {
-    // Placeholder for future use
+    // Placeholder
 }
 
 Weapon::Weapon(std::string _name, int _price, int _damage) : PermanentItem(_name, _price), damage(_damage) {}
 
-void Weapon::use(Player& player, StrongZombie& zombie)
+void Weapon::use(Player& player, Enemy* enemy)
 {
-    // Placeholder for future use
+    player.setAttack(player.getAttackDamage()+ damage);
+    std::cout << "\t\t\t\t"  <<  name << " equiped and added " << damage << "to your attack damage." << std::endl;
 }
 
 Melee::Melee(std::string _name, int _price, int _damage) : Weapon(_name, _price, _damage) {}
 
-void Melee::use(Player& player, StrongZombie& zombie)
+void Melee::use(Player& player, Enemy* enemy)
 {
-    // Placeholder for future use
+    player.setAttack(player.getAttackDamage()+ damage);
+    std::cout << "\t\t\t\t"  <<  name << " equiped and added " << damage << "to your attack damage." << std::endl;
 }
 
-HotWeapon::HotWeapon(std::string _name, int _price, int _damage) : Weapon(_name, _price, _damage) {}
+Firearm::Firearm(std::string _name, int _price, int _damage) : Weapon(_name, _price, _damage) {}
 
-void HotWeapon::use(Player& player, StrongZombie& zombie)
+void Firearm::use(Player& player, Enemy* enemy)
 {
-    // Placeholder for future use
+    player.setAttack(player.getAttackDamage()+ damage);
+    std::cout << "\t\t\t\t"  <<  name << " equiped and added " << damage << "to your attack damage." << std::endl;
 }
 
-Rifle::Rifle(std::string _name, int _price, int _damage) : HotWeapon(_name, _price, _damage) {}
+Rifle::Rifle(std::string _name, int _price, int _damage) : Firearm(_name, _price, _damage) {}
 
-void Rifle::use(Player& player, StrongZombie& zombie) 
+void Rifle::use(Player& player, Enemy* enemy) 
 {
-    std::cout << "Fired " << getName() << " and dealt " << damage << " damage." << std::endl;
+    player.setAttack(player.getAttackDamage()+ damage);
+    std::cout << "\t\t\t\t"  <<  name << " equiped and added " << damage << "to your attack damage." << std::endl;
 }
 
-Pistol::Pistol(std::string _name, int _price, int _damage) : HotWeapon(_name, _price, _damage) {}
+Pistol::Pistol(std::string _name, int _price, int _damage) : Firearm(_name, _price, _damage) {}
 
-void Pistol::use(Player& player, StrongZombie& zombie) 
+void Pistol::use(Player& player, Enemy* enemy) 
 {
-    std::cout << "Fired " << getName() << " and dealt " << damage << " damage." << std::endl;
+    player.setAttack(player.getAttackDamage()+ damage);
+    std::cout << "\t\t\t\t"  <<  name << " equiped and added " << damage << "to your attack damage." << std::endl;
 }
 
-Shotgun::Shotgun(std::string _name, int _price, int _damage) : HotWeapon(_name, _price, _damage) {}
+Shotgun::Shotgun(std::string _name, int _price, int _damage) : Firearm(_name, _price, _damage) {}
 
-void Shotgun::use(Player& player, StrongZombie& zombie) 
+void Shotgun::use(Player& player, Enemy* enemy) 
 {
-    std::cout << "Fired " << getName() << " and dealt " << damage << " damage." << std::endl;
+    player.setAttack(player.getAttackDamage()+ damage);
+    std::cout << "\t\t\t\t"  <<  name << " equiped and added " << damage << "to your attack damage." << std::endl;
 }
 
 Knife::Knife(std::string _name, int _price, int _damage) : Melee(_name, _price, _damage) {}
 
-void Knife::use(Player& player, StrongZombie& zombie) 
+void Knife::use(Player& player, Enemy* enemy) 
 {
-    std::cout << "Stabbed with " << getName() << " and dealt " << damage << " damage." << std::endl;
+    player.setAttack(player.getAttackDamage()+ damage);
+    std::cout << "\t\t\t\t"  <<  name << " equiped and added " << damage << "to your attack damage." << std::endl;
 }
 
 Katana::Katana(std::string _name, int _price, int _damage) : Melee(_name, _price, _damage) {}
 
-void Katana::use(Player& player, StrongZombie& zombie) 
+void Katana::use(Player& player, Enemy* enemy) 
 {
-    std::cout << "Slashed with " << getName() << " and dealt " << damage << " damage." << std::endl;
+    player.setAttack(player.getAttackDamage()+ damage);
+    std::cout << "\t\t\t\t"  <<  name << " equiped and added " << damage << "to your attack damage." << std::endl;
 }
 
 Axe::Axe(std::string _name, int _price, int _damage) : Melee(_name, _price, _damage) {}
 
-void Axe::use(Player& player, StrongZombie& zombie) 
+void Axe::use(Player& player, Enemy* enemy) 
 {
-    std::cout << "Swung " << getName() << " and dealt " << damage << " damage." << std::endl;
+    player.setAttack(player.getAttackDamage()+ damage);
+    std::cout << "\t\t\t\t"  <<  name << " equiped and added " << damage << "to your attack damage." << std::endl;
 }
